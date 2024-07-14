@@ -1,0 +1,32 @@
+version: '3'
+services:
+  nginx:
+    build: ./nginx
+    ports:
+      - "8080:80"
+    networks:
+      - webnet
+
+  app:
+    build: ./app
+    depends_on:
+      - postgres
+    networks:
+      - webnet
+    environment:
+      DATABASE_CONFIG_URI: 'postgresql://myuser:mypassword@postgres:5432/mydatabase'
+
+  postgres:
+    build: ./postgres
+    environment:
+      POSTGRES_PASSWORD: mypassword
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - webnet
+
+volumes:
+  pgdata:
+
+networks:
+  webnet:
